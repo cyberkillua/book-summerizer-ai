@@ -19,9 +19,9 @@ async function send_message(aiAnswer, senderNumber) {
       senderNumber
     );
 
-    await sent_text_message.then((res) => {
+    await sent_text_message.then(() => {
       console.log("Message sent successfully!");
-      console.log(res.rawResponse());
+      //   console.log(res.rawResponse());
     });
   } catch (e) {
     console.log(JSON.stringify(e));
@@ -66,12 +66,9 @@ async function ask_ai(userInput, senderNumber) {
       frequency_penalty: 0.3,
       temperature: 0.1,
     });
-
-    console.log(response.choices[0].message);
-
     const returnedtext = response.choices[0].message.content;
     conversationArr.push(response.choices[0].message);
-    send_message(returnedtext, senderNumber);
+    await send_message(returnedtext, senderNumber);
     return returnedtext;
   } catch (error) {
     console.log(error);
