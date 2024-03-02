@@ -2,13 +2,13 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const noCache = require("nocache");
-const axios = require("axios");
+// const axios = require("axios");
 const { ask_ai } = require("./start");
 
 require("dotenv").config();
 
 const app = express();
-const token = process.env.WHATSAPP_TOKEN;
+// const token = process.env.WHATSAPP_TOKEN;
 
 app.use(cors());
 app.use(noCache());
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (_req, res) => {
   res.end("Works!!");
 });
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   // Parse the request body from the POST
   // let body = req.body;
 
@@ -36,26 +36,27 @@ app.post("/webhook", (req, res) => {
       req.body.entry[0].changes[0].value.messages &&
       req.body.entry[0].changes[0].value.messages[0]
     ) {
-      let phone_number_id =
-        req.body.entry[0].changes[0].value.metadata.phone_number_id;
-      let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
+      // let phone_number_id =
+      //   req.body.entry[0].changes[0].value.metadata.phone_number_id;
+      // let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
       let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
       console.log("here webhook catch msgs>>>>");
-      axios({
-        method: "POST", // Required, HTTP method, a string, e.g. POST, GET
-        url:
-          "https://graph.facebook.com/v12.0/" +
-          phone_number_id +
-          "/messages?access_token=" +
-          token,
-        data: {
-          messaging_product: "whatsapp",
-          to: from,
-          // text: { body: "i got it : " + msg_body },
-        },
-        headers: { "Content-Type": "application/json" },
-      });
-      ask_ai(msg_body);
+      await ask_ai(msg_body);
+
+      // await axios({
+      //   method: "POST", // Required, HTTP method, a string, e.g. POST, GET
+      //   url:
+      //     "https://graph.facebook.com/v12.0/" +
+      //     phone_number_id +
+      //     "/messages?access_token=" +
+      //     token,
+      //   data: {
+      //     messaging_product: "whatsapp",
+      //     to: from,
+      //     // text: { body: "i got it : " + msg_body },
+      //   },
+      //   headers: { "Content-Type": "application/json" },
+      // });
     }
     res.sendStatus(200);
   } else {
