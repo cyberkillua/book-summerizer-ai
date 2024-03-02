@@ -2,27 +2,25 @@ const WhatsApp = require("whatsapp");
 const OpenAI = require("openai");
 require("dotenv").config();
 
-const SENDER_NUMBER = process.env.WA_PHONE_NUMBER_ID;
+const SUMMARIZER_AI_NUMBER = process.env.WA_PHONE_NUMBER_ID;
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
 });
-// Your test sender phone number
-const wa = new WhatsApp(SENDER_NUMBER);
 
-// Enter the recipient phone number
-const recipient_number = +2348152856528;
+const wa = new WhatsApp(SUMMARIZER_AI_NUMBER);
 
-async function send_message(aiAnswer) {
+async function send_message(aiAnswer, senderNumber) {
   try {
-    console.log("here sending send msg AI>>>>");
+    console.log("Sending message to WhatsApp...");
+
     const sent_text_message = wa.messages.text(
       { body: aiAnswer },
-      recipient_number
+      senderNumber
     );
 
     await sent_text_message.then((res) => {
-      console.log("message Sent!!");
+      console.log("Message sent successfully!");
       console.log(res.rawResponse());
     });
   } catch (e) {
@@ -30,9 +28,9 @@ async function send_message(aiAnswer) {
   }
 }
 
-async function ask_ai(userInput) {
+async function ask_ai(userInput, senderNumber) {
   try {
-    console.log("here asking AI>>>>");
+    console.log("Asking AI...");
     const conversationArr = [
       {
         role: "system",
@@ -73,7 +71,7 @@ async function ask_ai(userInput) {
 
     const returnedtext = response.choices[0].message.content;
     conversationArr.push(response.choices[0].message);
-    send_message(returnedtext);
+    send_message(returnedtext, senderNumber);
     return returnedtext;
   } catch (error) {
     console.log(error);
