@@ -5,8 +5,7 @@ require("dotenv").config();
 const SENDER_NUMBER = process.env.WA_PHONE_NUMBER_ID;
 
 const openai = new OpenAI({
-  apiKey: "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",
-  // dangerouslyAllowBrowser: true,
+  apiKey: process.env.OPEN_API_KEY,
 });
 // Your test sender phone number
 const wa = new WhatsApp(SENDER_NUMBER);
@@ -16,6 +15,7 @@ const recipient_number = +2348152856528;
 
 async function send_message(aiAnswer) {
   try {
+    console.log("here sending send msg AI>>>>");
     const sent_text_message = wa.messages.text(
       { body: aiAnswer },
       recipient_number
@@ -32,6 +32,7 @@ async function send_message(aiAnswer) {
 
 async function ask_ai(userInput) {
   try {
+    console.log("here asking AI>>>>");
     const conversationArr = [
       {
         role: "system",
