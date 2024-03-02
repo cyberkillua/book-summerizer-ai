@@ -1,0 +1,23 @@
+{
+  "name": "whatsapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "helmet": "^7.1.0",
+    "nocache": "^4.0.0",
+    "whatsapp": "^0.0.5-Alpha"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
