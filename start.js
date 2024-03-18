@@ -29,7 +29,7 @@ async function send_message(aiAnswer, senderNumber) {
   }
 }
 
-async function ask_ai(userInput, senderNumber) {
+export async function ask_ai(userInput, senderNumber) {
   try {
     console.log("Asking AI...");
 
@@ -70,5 +70,3 @@ OUTPUT: Markdown format with #Headings, ##H2, ###H3, + bullet points, + sub-bull
     console.log(error);
   }
 }
-
-module.exports = { ask_ai };

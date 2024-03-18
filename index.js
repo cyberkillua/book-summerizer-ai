@@ -3,8 +3,7 @@ import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
 import { ask_ai } from "./start.js";
-
-require("dotenv").config();
+import "dotenv/config";
 
 const app = express();
 app.use(cors());
