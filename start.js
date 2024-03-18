@@ -1,6 +1,7 @@
-const WhatsApp = require("whatsapp");
-const OpenAI = require("openai");
-require("dotenv").config();
+import WhatsApp from "whatsapp";
+import OpenAI from "openai";
+
+import "dotenv/config";
 
 const SUMMARIZER_AI_NUMBER = process.env.WA_PHONE_NUMBER_ID;
 
@@ -31,6 +32,7 @@ async function send_message(aiAnswer, senderNumber) {
 async function ask_ai(userInput, senderNumber) {
   try {
     console.log("Asking AI...");
+
     const conversationArr = [
       {
         role: "system",
@@ -60,6 +62,7 @@ OUTPUT: Markdown format with #Headings, ##H2, ###H3, + bullet points, + sub-bull
       temperature: 0.1,
     });
     const returnedtext = response.choices[0].message.content;
+
     conversationArr.push(response.choices[0].message);
     await send_message(returnedtext, senderNumber);
     return returnedtext;

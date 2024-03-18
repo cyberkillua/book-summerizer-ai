@@ -1,8 +1,11 @@
 env:
+  browser: true
   node: true
-  commonjs: true
-  es2021: true
-extends: eslint:recommended
+  es6: true
+
+extends:
+  - eslint:recommended
+
 parserOptions:
-  ecmaVersion: latest
-rules: {}
+  ecmaVersion: 2021
+  sourceType: module

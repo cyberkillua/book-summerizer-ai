@@ -1,8 +1,8 @@
-const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
-const noCache = require("nocache");
-const { ask_ai } = require("./start");
+import express from "express";
+import helmet from "helmet";
+import noCache from "nocache";
+import cors from "cors";
+import { ask_ai } from "./start.js";
 
 require("dotenv").config();
 
@@ -24,6 +24,10 @@ app.post("/webhook", async (req, res) => {
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
+    console.log(
+      "THIS IS THE MESSAGE OBJECT" +
+        req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
+    );
     // let phone_number_id =
     //   req.body.entry[0].changes[0].value.metadata.phone_number_id;
     let from = req.body.entry[0].changes[0].value.messages[0].from;
