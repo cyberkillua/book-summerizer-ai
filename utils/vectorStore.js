@@ -11,11 +11,9 @@ const supaBaseURL = process.env.SUPERBASEURL;
 const openAIKey = process.env.OPEN_API_KEY;
 const client = createClient(supaBaseURL, supaBaseApiKey);
 
-export async function fileToVector() {
+export async function fileToVector(fileName) {
   try {
-    const loader = new PDFLoader(
-      "/Users/mac/Desktop/projects/my projects/AI stuff/whatsapp/pdfcoffee.com_zonal-marking-michael-cox-pdf-free.pdf"
-    );
+    const loader = new PDFLoader(fileName);
 
     const docs = await loader.load();
 

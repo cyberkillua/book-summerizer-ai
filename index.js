@@ -4,6 +4,7 @@ import noCache from "nocache";
 import cors from "cors";
 import { ask_ai } from "./start.js";
 import "dotenv/config";
+import { fileToVector } from "./utils/vectorStore.js";
 
 const app = express();
 app.use(cors());
@@ -36,6 +37,9 @@ app.post("/webhook", async (req, res) => {
       req.body.entry[0].changes[0].value.messages[0].type === "document"
     ) {
       console.log("sent document");
+      await fileToVector(
+        req.body.entry[0].changes[0].value.messages[0].document.filename
+      );
     } else {
       console.log("don nothing");
     }
