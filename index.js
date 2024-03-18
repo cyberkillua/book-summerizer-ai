@@ -28,9 +28,17 @@ app.post("/webhook", async (req, res) => {
     let phone_number_id =
       req.body.entry[0].changes[0].value.metadata.phone_number_id;
     let from = req.body.entry[0].changes[0].value.messages[0].from;
-    const msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
-    console.log("Received webhook message:", msg_body);
-    await ask_ai(msg_body, from, phone_number_id);
+    if (req.body.entry[0].changes[0].value.messages[0].type === "text") {
+      const msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+      console.log("Received webhook message:", msg_body);
+      await ask_ai(msg_body, from, phone_number_id);
+    } else if (
+      req.body.entry[0].changes[0].value.messages[0].type === "document"
+    ) {
+      console.log("sent document");
+    } else {
+      console.log("don nothing");
+    }
     res.sendStatus(200);
   } else {
     res.sendStatus(404);
