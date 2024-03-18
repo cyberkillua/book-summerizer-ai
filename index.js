@@ -19,11 +19,11 @@ app.get("/", (_req, res) => {
 app.post("/webhook", async (req, res) => {
   // console.log(JSON.stringify(req.body, null, 2));
 
-  const obj = req.body.entry[0].changes[0].value.messages[0];
   if (
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
+    const obj = req.body.entry[0].changes[0].value.messages[0];
     console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(obj, null, 2));
     let phone_number_id =
       req.body.entry[0].changes[0].value.metadata.phone_number_id;
