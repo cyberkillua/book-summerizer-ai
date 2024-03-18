@@ -23,7 +23,7 @@ app.post("/webhook", async (req, res) => {
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
-    const obj = req.body.entry[0].changes[0].value.messages[0];
+    const obj = req.body.entry[0].changes[0].value;
     console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(obj, null, 2));
     let phone_number_id =
       req.body.entry[0].changes[0].value.metadata.phone_number_id;
