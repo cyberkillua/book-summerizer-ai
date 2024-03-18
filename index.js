@@ -27,12 +27,12 @@ app.post("/webhook", async (req, res) => {
       "THIS IS THE MESSAGE OBJECT" +
         req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
     );
-    // let phone_number_id =
-    //   req.body.entry[0].changes[0].value.metadata.phone_number_id;
+    let phone_number_id =
+      req.body.entry[0].changes[0].value.metadata.phone_number_id;
     let from = req.body.entry[0].changes[0].value.messages[0].from;
     const msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
     console.log("Received webhook message:", msg_body);
-    await ask_ai(msg_body, from);
+    await ask_ai(msg_body, from, phone_number_id);
     res.sendStatus(200);
   } else {
     res.sendStatus(404);

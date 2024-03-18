@@ -1,35 +1,38 @@
-import WhatsApp from "whatsapp";
 import OpenAI from "openai";
+import axios from "axios";
 
 import "dotenv/config";
-
-const SUMMARIZER_AI_NUMBER = process.env.WA_PHONE_NUMBER_ID;
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
 });
 
-const wa = new WhatsApp(SUMMARIZER_AI_NUMBER);
+const token = process.env.CLOUD_API_ACCESS_TOKEN;
 
-async function send_message(aiAnswer, senderNumber) {
+async function send_message(aiAnswer, senderNumber, phone_number_id) {
   try {
     console.log("Sending message to WhatsApp...");
 
-    const sent_text_message = wa.messages.text(
-      { body: aiAnswer },
-      senderNumber
-    );
-
-    await sent_text_message.then(() => {
-      console.log("Message sent successfully!");
-      //   console.log(res.rawResponse());
+    axios({
+      method: "POST",
+      url:
+        "https://graph.facebook.com/v12.0/" +
+        phone_number_id +
+        "/messages?access_token=" +
+        token,
+      data: {
+        messaging_product: "whatsapp",
+        to: senderNumber,
+        text: { body: aiAnswer },
+      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.log(JSON.stringify(e));
+    console.log("Error sending message:", e);
   }
 }
 
-export async function ask_ai(userInput, senderNumber) {
+export async function ask_ai(userInput, senderNumber, phone_number_id) {
   try {
     console.log("Asking AI...");
 
@@ -62,9 +65,8 @@ OUTPUT: Markdown format with #Headings, ##H2, ###H3, + bullet points, + sub-bull
       temperature: 0.1,
     });
     const returnedtext = response.choices[0].message.content;
-
     conversationArr.push(response.choices[0].message);
-    await send_message(returnedtext, senderNumber);
+    await send_message(returnedtext, senderNumber, phone_number_id);
     return returnedtext;
   } catch (error) {
     console.log(error);
