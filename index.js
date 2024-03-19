@@ -4,7 +4,7 @@ import noCache from "nocache";
 import cors from "cors";
 import { ask_ai } from "./start.js";
 import "dotenv/config";
-import { fileToVector } from "./utils/vectorStore.js";
+// import { fileToVector } from "./utils/vectorStore.js";
 
 const app = express();
 app.use(cors());
@@ -24,7 +24,7 @@ app.post("/webhook", async (req, res) => {
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
-    const obj = req.body.entry[0].changes[0].value;
+    const obj = req.body;
     console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(obj, null, 2));
     let phone_number_id =
       req.body.entry[0].changes[0].value.metadata.phone_number_id;
@@ -37,9 +37,9 @@ app.post("/webhook", async (req, res) => {
       req.body.entry[0].changes[0].value.messages[0].type === "document"
     ) {
       console.log("sent document!!");
-      await fileToVector(
-        req.body.entry[0].changes[0].value.messages[0].document.file
-      );
+      // await fileToVector(
+      //   req.body.entry[0].changes[0].value.messages[0].document.file
+      // );
     } else {
       console.log("don nothing");
     }
