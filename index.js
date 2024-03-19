@@ -39,7 +39,7 @@ app.post("/webhook", async (req, res) => {
       console.log("sent document!!");
       const MEDIA_ID =
         req.body.entry[0].changes[0].value.messages[0].document.id;
-      const response = fetchMediaData(MEDIA_ID);
+      const response = await fetchMediaData(MEDIA_ID);
       console.log(response);
       // await fileToVector(
       //   `/usr/local/wamedia/shared/${obj.messages[0].document.id}`
