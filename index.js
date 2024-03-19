@@ -38,7 +38,7 @@ app.post("/webhook", async (req, res) => {
     ) {
       console.log("sent document");
       await fileToVector(
-        req.body.entry[0].changes[0].value.messages[0].document.filename
+        req.body.entry[0].changes[0].value.messages[0].document.file
       );
     } else {
       console.log("don nothing");
