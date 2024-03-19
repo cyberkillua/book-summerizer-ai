@@ -36,7 +36,7 @@ app.post("/webhook", async (req, res) => {
     } else if (
       req.body.entry[0].changes[0].value.messages[0].type === "document"
     ) {
-      console.log("sent document");
+      console.log("sent document!!");
       await fileToVector(
         req.body.entry[0].changes[0].value.messages[0].document.file
       );
