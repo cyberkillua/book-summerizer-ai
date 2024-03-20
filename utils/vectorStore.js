@@ -25,7 +25,7 @@ export async function fileToVector(url) {
     });
 
     const output = await splitter.splitDocuments(docs);
-
+    console.log("STARTED!!!!");
     await SupabaseVectorStore.fromDocuments(
       output,
       new OpenAIEmbeddings({ openAIApiKey: openAIKey }),
