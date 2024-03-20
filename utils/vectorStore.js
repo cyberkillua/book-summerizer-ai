@@ -2,7 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+// import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 
 import "dotenv/config";
 
@@ -11,9 +12,9 @@ const supaBaseURL = process.env.SUPERBASEURL;
 const openAIKey = process.env.OPEN_API_KEY;
 const client = createClient(supaBaseURL, supaBaseApiKey);
 
-export async function fileToVector(fileName) {
+export async function fileToVector(url) {
   try {
-    const loader = new PDFLoader(fileName);
+    const loader = new CheerioWebBaseLoader(url);
 
     const docs = await loader.load();
 
@@ -24,8 +25,6 @@ export async function fileToVector(fileName) {
     });
 
     const output = await splitter.splitDocuments(docs);
-    console.log("DONE WITH OUTPUT");
-    console.log("DONE WITH CLIENT");
 
     await SupabaseVectorStore.fromDocuments(
       output,

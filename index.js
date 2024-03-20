@@ -2,9 +2,10 @@ import express from "express";
 import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
-import { ask_ai, fetchMediaData } from "./start.js";
+import { ask_ai } from "./start.js";
+import { fetchMediaData } from "./utils/fetchMedia.js";
 import "dotenv/config";
-// import { fileToVector } from "./utils/vectorStore.js";
+import { fileToVector } from "./utils/vectorStore.js";
 
 const app = express();
 app.use(cors());
@@ -24,26 +25,20 @@ app.post("/webhook", async (req, res) => {
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
-    const obj = req.body;
-    console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(obj, null, 2));
-    let phone_number_id =
-      req.body.entry[0].changes[0].value.metadata.phone_number_id;
-    let from = req.body.entry[0].changes[0].value.messages[0].from;
-    if (req.body.entry[0].changes[0].value.messages[0].type === "text") {
-      const msg_body = req.body.entry[0].changes[0].value.messages[0].text.body;
+    const body = req.body.entry[0].changes[0].value;
+    console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(body, null, 2));
+    let phone_number_id = body.metadata.phone_number_id;
+    let from = body.messages[0].from;
+    if (body.messages[0].type === "text") {
+      const msg_body = body.messages[0].text.body;
       console.log("Received webhook message:", msg_body);
       await ask_ai(msg_body, from, phone_number_id);
-    } else if (
-      req.body.entry[0].changes[0].value.messages[0].type === "document"
-    ) {
+    } else if (body.messages[0].type === "document") {
       console.log("sent document!!");
-      const MEDIA_ID =
-        req.body.entry[0].changes[0].value.messages[0].document.id;
-      const response = await fetchMediaData(MEDIA_ID);
-      console.log(response);
-      // await fileToVector(
-      //   `/usr/local/wamedia/shared/${obj.messages[0].document.id}`
-      // );
+      const MEDIA_ID = body.messages[0].document.id;
+      const document = await fetchMediaData(MEDIA_ID);
+      console.log(document);
+      await fileToVector(document.url);
     } else {
       console.log("don nothing");
     }

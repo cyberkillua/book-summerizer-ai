@@ -73,22 +73,3 @@ OUTPUT: Markdown format with #Headings, ##H2, ###H3, + bullet points, + sub-bull
   }
 }
 
-export async function fetchMediaData(MEDIA_ID) {
-  try {
-    const response = await axios.get(
-      `https://graph.facebook.com/v19.0/${MEDIA_ID}/`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    // Handle the successful response here
-    // console.log(response.data);
-    return response.data;
-  } catch (error) {
-    // Handle the error here
-    console.error(error);
-  }
-}
