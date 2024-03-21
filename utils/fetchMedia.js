@@ -34,11 +34,17 @@ export async function getFile(URL, FILE_NAME) {
     const writer = fs.createWriteStream(FILE_NAME);
     response.data.pipe(writer);
 
-    return new Promise((resolve, reject) => {
-      writer.on("finish", resolve);
+    await new Promise((resolve, reject) => {
+      writer.on("finish", () => resolve(FILE_NAME)); // Resolve with the filepath
       writer.on("error", reject);
     });
+
+    console.log(FILE_NAME);
+    return FILE_NAME; // Return the filepath
   } catch (error) {
     console.error(error);
+    throw error; // Re-throw error to handle it outside this function
   }
 }
+
+getFile("https://cyan-lyndy-22.tiiny.site", "resume2.pdf");
