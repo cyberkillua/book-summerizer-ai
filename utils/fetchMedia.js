@@ -47,4 +47,4 @@ export async function getFile(URL, FILE_NAME) {
   }
 }
 
-getFile("https://cyan-lyndy-22.tiiny.site", "resume2.pdf");
+
