@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { send_message } from "./utils/sendMessage";
+import { send_message } from "./utils/sendMessage.js";
 
 import "dotenv/config";
 
