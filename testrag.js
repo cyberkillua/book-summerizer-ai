@@ -1,18 +1,19 @@
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { PromptTemplate } from "langchain/prompts";
-import { StringOutputParser } from "langchain/schema/output_parser";
+import { ChatOpenAI } from "@langchain/openai";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 import { retriveFromVectorStore } from "./utils/retriver.js";
 import { combineDocuments } from "./utils/combineDocument.js";
 import {
   RunnablePassthrough,
   RunnableSequence,
-} from "langchain/schema/runnable";
+} from "@langchain/core/runnables";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({ openAIApiKey: openAIKey, temperature: 0.1 });
 
 export async function askAI() {
   try {
+    console.log("I AM HERE");
     const standaloneQuestionTemplate =
       "Given a question, convert it to a standalone question. question: {question} standalone question:";
     const standaloneQuestionPrompt = PromptTemplate.fromTemplate(
@@ -38,8 +39,11 @@ answer: `;
       .pipe(llm)
       .pipe(new StringOutputParser());
 
+    console.log("WANNA RETERIVE");
+
     const retriever = await retriveFromVectorStore();
 
+    console.log("I RETERIVED");
     const retrieverChain = RunnableSequence.from([
       (prevResult) => prevResult.standalone_question,
       retriever,
@@ -58,9 +62,9 @@ answer: `;
       },
       answerChain,
     ]);
-
+    console.log("CALLING CHAIN");
     const response = await chain.invoke({
-      question: "tell me about atomic habit",
+      question: `summarize never-split-the-difference for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. `,
     });
 
     console.log(response);

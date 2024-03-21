@@ -3,7 +3,7 @@ import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
 import { ask_ai } from "./start.js";
-import { fetchMediaData } from "./utils/fetchMedia.js";
+import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
 
@@ -38,7 +38,9 @@ app.post("/webhook", async (req, res) => {
       const MEDIA_ID = body.messages[0].document.id;
       const document = await fetchMediaData(MEDIA_ID);
       console.log(document);
-      await fileToVector(document.url);
+      const fileName = body.messages[0].document.filename.replace(/ /g, "_");
+      const file = await getFile(document.url, fileName);
+      await fileToVector(file);
     } else {
       console.log("don nothing");
     }
