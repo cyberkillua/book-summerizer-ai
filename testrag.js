@@ -7,11 +7,12 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
+import { send_message } from "./utils/sendMessage.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({ openAIApiKey: openAIKey, temperature: 0.1 });
 
-export async function askAI() {
+export async function askAI(question, senderNumber, phone_number_id) {
   try {
     console.log("I AM HERE");
     const standaloneQuestionTemplate =
@@ -64,13 +65,16 @@ answer: `;
     ]);
     console.log("CALLING CHAIN");
     const response = await chain.invoke({
-      question: `summarize never-split-the-difference for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. `,
+      question: question,
     });
-
+    await send_message(response, senderNumber, phone_number_id);
     console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
 }
 
-askAI();
+// askAI(
+//   `summarize moshood-alimi-pdf for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. `
+// );

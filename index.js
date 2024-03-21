@@ -6,6 +6,7 @@ import { ask_ai } from "./start.js";
 import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
+import { askAI } from "./testrag.js";
 
 const app = express();
 app.use(cors());
@@ -41,6 +42,11 @@ app.post("/webhook", async (req, res) => {
       const fileName = body.messages[0].document.filename.replace(/ /g, "_");
       const file = await getFile(document.url, fileName);
       await fileToVector(file);
+      await askAI(
+        `summarize ${fileName} for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`,
+        from,
+        phone_number_id
+      );
     } else {
       console.log("don nothing");
     }
