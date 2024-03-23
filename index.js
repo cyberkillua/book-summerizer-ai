@@ -36,19 +36,22 @@ app.post("/webhook", async (req, res) => {
       await ask_ai(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
       const MEDIA_ID = body.messages[0].document.id;
+      const originalFileName = body.messages[0].document.filename;
+
       // Check if the document has already been processed
-      if (processedDocuments.has(MEDIA_ID)) {
+      if (processedDocuments.has(originalFileName)) {
         console.log(
-          `Document ${MEDIA_ID} has already been processed. Skipping...`
+          `Document ${originalFileName} has already been processed. Skipping...`
         );
         res.sendStatus(200);
         return;
       }
-      console.log("Recieved document!!");
-
       const document = await fetchMediaData(MEDIA_ID);
       const fileName = body.messages[0].document.filename.replace(/ /g, "_");
+      console.log("Recieved document!!");
+
       const file = await getFile(document.url, fileName);
+
       await fileToVector(file);
       await askAI(
         `summarize ${fileName} for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`,
@@ -56,7 +59,7 @@ app.post("/webhook", async (req, res) => {
         phoneNumber
       );
       // Add the processed document to the set
-      processedDocuments.add(MEDIA_ID);
+      processedDocuments.add(originalFileName);
       res.sendStatus(200);
     } else {
       console.log("don nothing");
