@@ -35,20 +35,21 @@ app.post("/webhook", async (req, res) => {
       console.log("Received webhook message:", msg_body);
       await ask_ai(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
+      console.log("Recieved document!!");
       const MEDIA_ID = body.messages[0].document.id;
-      const originalFileName = body.messages[0].document.filename;
 
+      const fileName = body.messages[0].document.filename.replace(/ /g, "_");
       // Check if the document has already been processed
-      if (processedDocuments.has(originalFileName)) {
+      if (processedDocuments.has(fileName)) {
         console.log(
-          `Document ${originalFileName} has already been processed. Skipping...`
+          `Document ${fileName} has already been processed. Skipping...`
         );
         res.sendStatus(200);
         return;
       }
+      processedDocuments.add(fileName);
+
       const document = await fetchMediaData(MEDIA_ID);
-      const fileName = body.messages[0].document.filename.replace(/ /g, "_");
-      console.log("Recieved document!!");
 
       const file = await getFile(document.url, fileName);
 
@@ -58,8 +59,6 @@ app.post("/webhook", async (req, res) => {
         from,
         phoneNumber
       );
-      // Add the processed document to the set
-      processedDocuments.add(originalFileName);
       res.sendStatus(200);
     } else {
       console.log("don nothing");
