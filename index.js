@@ -35,6 +35,7 @@ app.post("/webhook", async (req, res) => {
       console.log("Received webhook message:", msg_body);
       await ask_ai(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
+      const MEDIA_ID = body.messages[0].document.id;
       // Check if the document has already been processed
       if (processedDocuments.has(MEDIA_ID)) {
         console.log(
@@ -44,7 +45,7 @@ app.post("/webhook", async (req, res) => {
         return;
       }
       console.log("Recieved document!!");
-      const MEDIA_ID = body.messages[0].document.id;
+
       const document = await fetchMediaData(MEDIA_ID);
       const fileName = body.messages[0].document.filename.replace(/ /g, "_");
       const file = await getFile(document.url, fileName);
