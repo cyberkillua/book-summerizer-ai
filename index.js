@@ -9,6 +9,7 @@ import { fileToVector } from "./utils/vectorStore.js";
 import { askAI } from "./testrag.js";
 
 const app = express();
+const processedDocuments = new Set();
 app.use(cors());
 app.use(noCache());
 app.use(helmet());
@@ -20,36 +21,46 @@ app.get("/", (_req, res) => {
   res.end("Works!!");
 });
 app.post("/webhook", async (req, res) => {
-  // console.log(JSON.stringify(req.body, null, 2));
-
   if (
     req.body.object &&
     req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
   ) {
     const body = req.body.entry[0].changes[0].value;
-    console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(body, null, 2));
-    let phone_number_id = body.metadata.phone_number_id;
+    let phoneNumber = body.metadata.phone_number_id;
     let from = body.messages[0].from;
+
+    console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(body, null, 2));
     if (body.messages[0].type === "text") {
       const msg_body = body.messages[0].text.body;
       console.log("Received webhook message:", msg_body);
-      await ask_ai(msg_body, from, phone_number_id);
+      await ask_ai(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
-      console.log("sent document!!");
+      // Check if the document has already been processed
+      if (processedDocuments.has(MEDIA_ID)) {
+        console.log(
+          `Document ${MEDIA_ID} has already been processed. Skipping...`
+        );
+        res.sendStatus(200);
+        return;
+      }
+      console.log("Recieved document!!");
       const MEDIA_ID = body.messages[0].document.id;
       const document = await fetchMediaData(MEDIA_ID);
-      console.log(document);
       const fileName = body.messages[0].document.filename.replace(/ /g, "_");
       const file = await getFile(document.url, fileName);
       await fileToVector(file);
       await askAI(
         `summarize ${fileName} for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`,
         from,
-        phone_number_id
+        phoneNumber
       );
+      // Add the processed document to the set
+      processedDocuments.add(MEDIA_ID);
+      res.sendStatus(200);
     } else {
       console.log("don nothing");
     }
+
     res.sendStatus(200);
   } else {
     res.sendStatus(404);
