@@ -20,6 +20,8 @@ export async function askAI(question, senderNumber, phone_number_id) {
       standaloneQuestionTemplate
     );
 
+    console.log("THIS IS THE STANDALONE PROMPT" + standaloneQuestionPrompt);
+
     const answerTemplate = `Act as a professional book summarizer. Your goal is to 
     help the user understand a book without reading it. Concentrate on only the most
     important takeaways and primary points from the book that together will give the
