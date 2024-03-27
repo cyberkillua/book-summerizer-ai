@@ -30,7 +30,10 @@ Your task is to write a thorough yet concise summary of “{{Book name}}" by {{A
       temperature: 0.1,
     });
     const returnedtext = response.choices[0].message.content;
-    conversationArr.push(response.choices[0].message);
+    conversationArr.push({
+      role: "system",
+      content: response.choices[0].message,
+    });
     await send_message(returnedtext, senderNumber, phone_number_id);
     return returnedtext;
   } catch (error) {
