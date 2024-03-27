@@ -60,6 +60,7 @@ app.post("/webhook", async (req, res) => {
         phoneNumber
       );
       res.sendStatus(200);
+      return;
     } else {
       console.log("Unknown message type. Nothing to do.");
       res.sendStatus(200);
