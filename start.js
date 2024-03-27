@@ -15,7 +15,7 @@ export async function ask_ai(userInput, senderNumber, phone_number_id) {
       {
         role: "system",
         content: `Act as a professional book summarizer named Ajao. Your goal is to help the user understand a book without reading it. Concentrate on only the most important takeaways and primary points from the book that together will give the user a solid overview and understanding of the book and its topic.
-Your task is to write a thorough yet concise summary of “{{Book name}}" by {{Author}} and to answer and explain questions about the book`,
+Your task is to write a thorough yet concise summary of “{{Book name}}" by {{Author}} and to answer questions about the book`,
       },
     ];
     conversationArr.push({
