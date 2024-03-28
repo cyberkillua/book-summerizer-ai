@@ -2,7 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
-import { ask_ai } from "./start.js";
+// import { ask_ai } from "./start.js";
 import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
@@ -33,7 +33,8 @@ app.post("/webhook", async (req, res) => {
     if (body.messages[0].type === "text") {
       const msg_body = body.messages[0].text.body;
       console.log("Received webhook message:", msg_body);
-      await ask_ai(msg_body, from, phoneNumber);
+      // await ask_ai(msg_body, from, phoneNumber);
+      await askAI(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
       console.log("Recieved document!!");
       const MEDIA_ID = body.messages[0].document.id;
