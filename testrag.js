@@ -11,7 +11,13 @@ import { send_message } from "./utils/sendMessage.js";
 import { formatConvHistory } from "./utils/formatConvo.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
-const llm = new ChatOpenAI({ openAIApiKey: openAIKey, temperature: 0.1 });
+const llm = new ChatOpenAI({
+  model: "gpt-3.5-turbo",
+  openAIApiKey: openAIKey,
+  presence_penalty: 0,
+  frequency_penalty: 0.3,
+  temperature: 0.1,
+});
 const convoHistory = [];
 
 export async function askAI(question, senderNumber, phone_number_id) {
