@@ -17,7 +17,7 @@ export async function checkDataExists(
       .select()
       .eq(filterColumn, filterValue)
       .eq(filterColumn2, filterValue2)
-      .execute().value;
+      .maybeSingle();
 
     if (error) {
       console.error("Error checking data existence:", error);
