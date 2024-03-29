@@ -17,14 +17,14 @@ export async function checkDataExists(
       .select("id")
       .eq(filterColumn, filterValue)
       .eq(filterColumn2, filterValue2)
-      .single();
+      .head();
 
     if (error) {
       console.error("Error checking data existence:", error);
       return false;
     }
 
-    return data !== null;
+    return data !== undefined;
   } catch (error) {
     console.error("Error checking data existence:", error);
     return false;
