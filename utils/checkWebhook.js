@@ -14,17 +14,21 @@ export async function checkDataExists(
   try {
     const { data, error } = await supabase
       .from(tableName)
-      .select("id")
+      .select()
       .eq(filterColumn, filterValue)
       .eq(filterColumn2, filterValue2)
-      .head();
+      .execute().value;
 
     if (error) {
       console.error("Error checking data existence:", error);
       return false;
     }
 
-    return data !== undefined;
+    if (data.length < 0) {
+      return false;
+    }
+
+    return true;
   } catch (error) {
     console.error("Error checking data existence:", error);
     return false;
