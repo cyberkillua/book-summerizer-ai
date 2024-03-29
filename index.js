@@ -7,9 +7,9 @@ import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
 import { askAI } from "./testrag.js";
+import { checkDataExists, insertData } from "./utils/checkWebhook.js";
 
 const app = express();
-const processedDocuments = new Set();
 app.use(cors());
 app.use(noCache());
 app.use(helmet());
@@ -28,7 +28,27 @@ app.post("/webhook", async (req, res) => {
     const body = req.body.entry[0].changes[0].value;
     let phoneNumber = body.metadata.phone_number_id;
     let from = body.messages[0].from;
+    const timeStamp = body.messages[0].timestamp;
+    const data = {
+      timeStamp,
+      phoneNumber,
+    };
 
+    const webhookSentAlready = await checkDataExists(
+      "recieved_webhooks",
+      "timeStamp",
+      timeStamp,
+      "phoneNumber",
+      phoneNumber
+    );
+
+    if (webhookSentAlready === true) {
+      console.log(`Message has already been processed. Skipping...`);
+      res.sendStatus(200);
+      return;
+    } else {
+      await insertData("recieved_webhooks", data);
+    }
     console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(body, null, 2));
     if (body.messages[0].type === "text") {
       const msg_body = body.messages[0].text.body;
@@ -40,15 +60,6 @@ app.post("/webhook", async (req, res) => {
       const MEDIA_ID = body.messages[0].document.id;
 
       const fileName = body.messages[0].document.filename.replace(/ /g, "_");
-      // Check if the document has already been processed
-      if (processedDocuments.has(fileName)) {
-        console.log(
-          `Document ${fileName} has already been processed. Skipping...`
-        );
-        res.sendStatus(200);
-        return;
-      }
-      processedDocuments.add(fileName);
 
       const document = await fetchMediaData(MEDIA_ID);
 
