@@ -24,11 +24,7 @@ export async function checkDataExists(
       return false;
     }
 
-    if (data.length < 0) {
-      return false;
-    }
-
-    return true;
+    return data !== null;
   } catch (error) {
     console.error("Error checking data existence:", error);
     return false;
