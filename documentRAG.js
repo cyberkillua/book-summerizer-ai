@@ -12,15 +12,11 @@ import { formatConvHistory } from "./utils/formatConvo.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  model: "gpt-4",
   openAIApiKey: openAIKey,
-  presence_penalty: 0,
-  frequency_penalty: 0.3,
-  temperature: 0.1,
 });
 const convoHistory = [];
 
-export async function askAI(question, senderNumber, phone_number_id) {
+export async function docuSummary(question, senderNumber, phone_number_id) {
   try {
     const standaloneQuestionTemplate =
       "Given a question, convert it to a standalone question. question: {question} standalone question:";
@@ -36,8 +32,9 @@ export async function askAI(question, senderNumber, phone_number_id) {
 4. Key takeaways from the book  
 5. Comparison to other notable books on the same subject
 6. Recommendations of similar books on the topic
+To gather information about the book:
 When summarizing, be sure to clearly separate each of the requested aspects (1-6 above) using headings or numbered sections for clarity.
-Please provide as thorough and detailed a summary as possible given the information available. Always speak as if you were chatting to a friend.
+Please provide as thorough and detailed a summary as possible given the information available.
 “{{Book name}}" by {{Author}}
 context: {context}
 conversation history: {conv_history}
@@ -87,7 +84,3 @@ answer: `;
     console.log(error);
   }
 }
-
-askAI(
-  "using your knowledge and understanding from pre-training to summarize  tell me about atomic habits by james clear"
-);
