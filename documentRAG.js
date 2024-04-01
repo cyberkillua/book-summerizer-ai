@@ -11,7 +11,7 @@ import { send_message } from "./utils/sendMessage.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  model: "gpt-4",
+  modelName: "gpt-4",
   openAIApiKey: openAIKey,
 });
 
@@ -22,8 +22,6 @@ export async function docuSummary(question, senderNumber, phone_number_id) {
     const standaloneQuestionPrompt = PromptTemplate.fromTemplate(
       standaloneQuestionTemplate
     );
-
-    console.log(JSON.stringify(standaloneQuestionPrompt, null, 2));
 
     //   "You are a helpful and enthusiastic professional book summarizer bot who can answer a given question about Books based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. Always speak as if you were chatting to a friend."
     const answerTemplate = `Act as a professional book summarizer named Ajao. Your goal is to help the user understand a document without reading it. Concentrate on only the most important takeaways and primary points from the book that together will give the user a solid overview and understanding of the book and its topic.
@@ -69,6 +67,7 @@ answer: `;
       answerChain,
     ]);
     console.log("CALLING CHAIN");
+    console.log("3. " + JSON.stringify(chain, null, 2));
 
     const response = await chain.invoke({
       question: question,
