@@ -8,13 +8,11 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { send_message } from "./utils/sendMessage.js";
-import { formatConvHistory } from "./utils/formatConvo.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
   openAIApiKey: openAIKey,
 });
-const convoHistory = [];
 
 export async function docuSummary(question, senderNumber, phone_number_id) {
   try {
@@ -37,7 +35,6 @@ When summarizing, be sure to clearly separate each of the requested aspects (1-6
 Please provide as thorough and detailed a summary as possible given the information available.
 “{{Book name}}" by {{Author}}
 context: {context}
-conversation history: {conv_history}
 question: {question}
 answer: `;
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
@@ -65,7 +62,6 @@ answer: `;
       {
         context: retrieverChain,
         question: ({ original_input }) => original_input.question,
-        conv_history: ({ original_input }) => original_input.conv_history,
       },
       answerChain,
     ]);
@@ -73,10 +69,8 @@ answer: `;
 
     const response = await chain.invoke({
       question: question,
-      conv_history: formatConvHistory(convoHistory),
     });
-    convoHistory.push(question);
-    convoHistory.push(response);
+
     await send_message(response, senderNumber, phone_number_id);
     console.log(response);
     return response;
