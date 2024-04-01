@@ -34,8 +34,6 @@ Include all of the following in your summary:
 6. Recommendations of similar books on the topic
 To gather information about the book:
 When summarizing, be sure to clearly separate each of the requested aspects (1-6 above) using headings or numbered sections for clarity.
-Please Utilize the context provided to provide a thorough and detailed summary given the information available. 
-context: {context}
 question: {question}
 answer: `;
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
@@ -67,7 +65,6 @@ answer: `;
       answerChain,
     ]);
     console.log("CALLING CHAIN");
-    console.log("3. " + JSON.stringify(chain, null, 2));
 
     const response = await chain.invoke({
       question: question,
