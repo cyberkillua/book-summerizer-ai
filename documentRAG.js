@@ -7,15 +7,16 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
-import { send_message } from "./utils/sendMessage.js";
+// import { send_message } from "./utils/sendMessage.js";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  modelName: "gpt-4",
+  modelName: "gpt-4-0125-preview",
   openAIApiKey: openAIKey,
 });
 
-export async function docuSummary(question, senderNumber, phone_number_id) {
+export async function docuSummary(question) {
   try {
     const standaloneQuestionTemplate =
       "Given a question, convert it to a standalone question. question: {question} standalone question:";
@@ -43,12 +44,25 @@ answer: `;
       .pipe(llm)
       .pipe(new StringOutputParser());
 
-    const retriever = await retriveFromVectorStore();
+    // Generate an embedding for the input text
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: openAIKey,
+    });
 
+    const queryEmbedding = await embeddings.embedQuery(standaloneQuestionChain);
+
+    const retriever = await retriveFromVectorStore();
     console.log("I RETERIVED");
+    // Retrieve relevant documents
+    const relevantDocuments = await retriever.getRelevantDocuments(
+      queryEmbedding
+    );
+
+    console.log(relevantDocuments);
+
     const retrieverChain = RunnableSequence.from([
       (prevResult) => prevResult.standalone_question,
-      retriever,
+      relevantDocuments,
       combineDocuments,
     ]);
 
@@ -71,10 +85,14 @@ answer: `;
       question: question,
     });
 
-    await send_message(response, senderNumber, phone_number_id);
+    // await send_message(response, senderNumber, phone_number_id);
     console.log(response);
     return response;
   } catch (error) {
     console.log(error);
   }
 }
+
+docuSummary(
+  `summarize Nawal_El_Saadawi__Sherif_Hetata_-_Woman_at_Point_Zero-Zed_Books_Ltd_(2007).pdf for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`
+);

@@ -12,7 +12,7 @@ import { formatConvHistory } from "./utils/formatConvo.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  modelName: "gpt-4",
+  modelName: "gpt-4-0125-preview",
   openAIApiKey: openAIKey,
   presence_penalty: 0,
   frequency_penalty: 0.3,
