@@ -32,7 +32,7 @@ export async function docuSummary(question, senderNumber, phone_number_id) {
 6. Recommendations of similar books on the topic
 To gather information about the book:
 When summarizing, be sure to clearly separate each of the requested aspects (1-6 above) using headings or numbered sections for clarity.
-Please provide as thorough and detailed a summary as possible given the information available.
+Please provide as thorough and detailed a summary as possible given the information available. Try to find the answer in the context. 
 “{{Book name}}" by {{Author}}
 context: {context}
 question: {question}
