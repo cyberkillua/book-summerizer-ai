@@ -19,9 +19,9 @@ export async function fileToVector(fileName) {
     const docs = await loader.load();
 
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500,
+      chunkSize: 2000,
       separators: ["\n\n", "\n", " ", ""], // default setting
-      chunkOverlap: 50,
+      chunkOverlap: 100,
     });
 
     const output = await splitter.splitDocuments(docs);
