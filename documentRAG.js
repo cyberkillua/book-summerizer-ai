@@ -34,6 +34,7 @@ Include all of the following in your summary:
 6. Recommendations of similar books on the topic
 To gather information about the book:
 When summarizing, be sure to clearly separate each of the requested aspects (1-6 above) using headings or numbered sections for clarity.
+context: {context}
 question: {question}
 answer: `;
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
