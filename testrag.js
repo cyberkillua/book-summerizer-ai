@@ -88,6 +88,3 @@ answer: `;
   }
 }
 
-askAI(
-  "using your knowledge and understanding from pre-training to summarize  tell me about atomic habits by james clear"
-);

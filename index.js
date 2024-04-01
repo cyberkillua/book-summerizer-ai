@@ -54,7 +54,6 @@ app.post("/webhook", async (req, res) => {
     if (body.messages[0].type === "text") {
       const msg_body = body.messages[0].text.body;
       console.log("Received webhook message:", msg_body);
-      // await ask_ai(msg_body, from, phoneNumber);
       await askAI(msg_body, from, phoneNumber);
     } else if (body.messages[0].type === "document") {
       console.log("Recieved document!!");
