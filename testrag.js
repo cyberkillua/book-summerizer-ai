@@ -37,9 +37,6 @@ export async function askAI(question, senderNumber, phone_number_id) {
 5. Comparison to other notable books on the same subject
 6. Recommendations of similar books on the topic
 To gather information about the book:
-First, check the conversation history for any previously provided context about the book.
-If no relevant context is found, then check the RAG (Retrieval-Augmented Generation) system context for any available information related to the book, such as chapter summaries, reviews, or analyses.
-If no information is found in either the conversation history or the RAG context, then default to your own knowledge and understanding from pre-training to summarize the book based on the provided book title.
 When summarizing, be sure to clearly separate each of the requested aspects (1-6 above) using headings or numbered sections for clarity.
 Please provide as thorough and detailed a summary as possible given the information available.
 “{{Book name}}" by {{Author}}
