@@ -45,7 +45,6 @@ app.post("/webhook", async (req, res) => {
 
     if (webhookSentAlready === true) {
       console.log(`Message has already been processed. Skipping...`);
-      res.sendStatus(200);
       return;
     } else {
       await insertData("recieved_webhooks", data);
@@ -71,8 +70,6 @@ app.post("/webhook", async (req, res) => {
         from,
         phoneNumber
       );
-      res.sendStatus(200);
-      return;
     } else {
       console.log("Unknown message type. Nothing to do.");
       res.sendStatus(200);
