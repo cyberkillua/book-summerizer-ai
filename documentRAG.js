@@ -23,7 +23,8 @@ export async function docuSummary(question, senderNumber, phone_number_id) {
     );
 
     //   "You are a helpful and enthusiastic professional book summarizer bot who can answer a given question about Books based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. Always speak as if you were chatting to a friend."
-    const answerTemplate = `You are a helpful, book summary bot named Ajao, Given a book title, please provide a comprehensive summary covering the following aspects:
+    const answerTemplate = `Act as a professional book summarizer named Ajao. Your goal is to help the user understand a book without reading it. Concentrate on only the most important takeaways and primary points from the book that together will give the user a solid overview and understanding of the book and its topic.
+Include all of the following in your summary:
 1. Main topic or theme of the book 
 2. Key ideas or arguments presented
 3. Detailed summaries of each chapter, including the conclusions
