@@ -79,7 +79,3 @@ answer: `;
     console.log(error);
   }
 }
-
-docuSummary(
-  `summarize Nawal_El_Saadawi__Sherif_Hetata_-_Woman_at_Point_Zero-Zed_Books_Ltd_(2007).pdf for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`
-);
