@@ -20,7 +20,7 @@ export async function retriveFromVectorStore() {
       }
     );
 
-    const retriever = vectorStore.asRetriever({ relevanceScoreThreshold: 0.1 });
+    const retriever = vectorStore.asRetriever({ relevanceScoreThreshold: 0.5 });
 
     return retriever;
   } catch (error) {
