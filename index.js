@@ -66,7 +66,11 @@ app.post("/webhook", async (req, res) => {
 
       await fileToVector(file);
       await docuSummary(
-        `summarize ${fileName} for me based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer.`,
+        `Summarize the contents of the document ${fileName} based on the relevant 
+        information retrieved by the retrieval-augmented generation (RAG) system. 
+        If the RAG system does not contain enough context to summarize the document, 
+        respond with "I'm sorry, I don't have enough information from the given context
+        to provide a useful summary.`,
         from,
         phoneNumber
       );
