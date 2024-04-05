@@ -45,7 +45,8 @@ for someone who enjoyed this book, explaining why you'd suggest each.
 To gather book information:
 Name of book to summarize: ${question}
 Context: {context}
-Then provide your detailed, insightful, and engaging book summary following the above structure.
+Then provide your detailed, insightful, and engaging book summary following the above structure and also keep it
+within the 3500 character limit.
 Compare to other relevant books even if not provided. Let me know if any other clarification is needed! `;
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
 
