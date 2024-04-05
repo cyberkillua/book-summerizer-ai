@@ -65,7 +65,13 @@ app.post("/webhook", async (req, res) => {
       const file = await getFile(document.url, fileName);
 
       await fileToVector(file);
-      await docuSummary(`${fileName}`, from, phoneNumber);
+      await docuSummary(
+        `Summarize the contents of the document ${fileName} based on the relevant 
+        information retrieved by the retrieval-augmented generation (RAG) system. 
+        `,
+        from,
+        phoneNumber
+      );
     } else {
       console.log("Unknown message type. Nothing to do.");
       res.sendStatus(200);
