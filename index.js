@@ -29,7 +29,7 @@ app.post("/webhook", async (req, res) => {
     const { phone_number_id: phoneNumber } = metadata;
     const { from, timestamp, type, document } = messages[0];
 
-    const data = { timeStamp: timestamp, phoneNumber };
+    const data = { timeStamp: timestamp, phoneNumber: from };
 
     const webhookSentAlready = await checkDataExists(
       "recieved_webhooks",
