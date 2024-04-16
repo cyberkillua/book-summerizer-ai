@@ -2,7 +2,6 @@ import express from "express";
 import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
-// import { ask_ai } from "./start.js";
 import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
@@ -37,7 +36,7 @@ app.post("/webhook", async (req, res) => {
       "timeStamp",
       timestamp,
       "phoneNumber",
-      phoneNumber
+      from
     );
 
     if (webhookSentAlready) {
