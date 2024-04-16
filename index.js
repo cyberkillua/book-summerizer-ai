@@ -22,48 +22,42 @@ app.get("/", (_req, res) => {
   res.end("Works!!");
 });
 app.post("/webhook", async (req, res) => {
-  if (
-    req.body.object &&
-    req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
-  ) {
-    const body = req.body.entry[0].changes[0].value;
-    let phoneNumber = body.metadata.phone_number_id;
-    let from = body.messages[0].from;
-    const timeStamp = body.messages[0].timestamp;
-    const data = {
-      timeStamp,
-      phoneNumber,
-    };
+  const { object, entry } = req.body;
+
+  if (object && entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
+    const body = entry[0].changes[0].value;
+    const { metadata, messages } = body;
+    const { phone_number_id: phoneNumber } = metadata;
+    const { from, timestamp, type, document } = messages[0];
+
+    const data = { timeStamp: timestamp, phoneNumber };
 
     const webhookSentAlready = await checkDataExists(
       "recieved_webhooks",
       "timeStamp",
-      timeStamp,
+      timestamp,
       "phoneNumber",
       phoneNumber
     );
 
-    if (webhookSentAlready === true) {
+    if (webhookSentAlready) {
       console.log(`Message has already been processed. Skipping...`);
-      return;
-    } else {
-      await insertData("recieved_webhooks", data);
+      return res.sendStatus(200);
     }
-    console.log("THIS IS THE MESSAGE OBJECT" + JSON.stringify(body, null, 2));
-    if (body.messages[0].type === "text") {
-      const msg_body = body.messages[0].text.body;
+
+    await insertData("recieved_webhooks", data);
+    console.log("THIS IS THE MESSAGE OBJECT", JSON.stringify(body, null, 2));
+
+    if (type === "text") {
+      const msg_body = messages[0].text.body;
       console.log("Received webhook message:", msg_body);
       await askAI(msg_body, from, phoneNumber);
-    } else if (body.messages[0].type === "document") {
-      console.log("Recieved document!!");
-      const MEDIA_ID = body.messages[0].document.id;
-
-      const fileName = body.messages[0].document.filename.replace(/ /g, "_");
-
-      const document = await fetchMediaData(MEDIA_ID);
-
-      const file = await getFile(document.url, fileName);
-
+    } else if (type === "document") {
+      console.log("Received document!!");
+      const MEDIA_ID = document.id;
+      const fileName = document.filename.replace(/ /g, "_");
+      const documentData = await fetchMediaData(MEDIA_ID);
+      const file = await getFile(documentData.url, fileName);
       await fileToVector(file);
       await docuSummary(
         `Summarize the contents of the document ${fileName} based on the relevant 
@@ -74,13 +68,12 @@ app.post("/webhook", async (req, res) => {
       );
     } else {
       console.log("Unknown message type. Nothing to do.");
-      res.sendStatus(200);
     }
 
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
+    return res.sendStatus(200);
   }
+
+  return res.sendStatus(404);
 });
 
 app.get("/webhook", (req, res) => {
