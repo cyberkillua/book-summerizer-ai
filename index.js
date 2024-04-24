@@ -7,7 +7,7 @@ import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
 import { askAI } from "./testrag.js";
 import { docuSummary } from "./documentRAG.js";
-import { checkDataExists, insertData } from "./utils/checkWebhook.js";
+import { checkDataExists, insertData } from "./utils/databaseFunctions.js";
 
 const app = express();
 app.use(cors());
@@ -63,7 +63,8 @@ app.post("/webhook", async (req, res) => {
         information retrieved by the retrieval-augmented generation (RAG) system. 
         `,
         from,
-        phoneNumber
+        phoneNumber,
+        fileName
       );
     } else {
       console.log("Unknown message type. Nothing to do.");

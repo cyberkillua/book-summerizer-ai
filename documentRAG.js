@@ -9,6 +9,7 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { send_message } from "./utils/sendMessage.js";
+import { saveBooks } from "./utils/databaseFunctions.js";
 
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
@@ -17,7 +18,12 @@ const llm = new ChatOpenAI({
   openAIApiKey: openAIKey,
 });
 
-export async function docuSummary(question, senderNumber, phone_number_id) {
+export async function docuSummary(
+  question,
+  senderNumber,
+  phone_number_id,
+  fileName
+) {
   try {
     const standaloneQuestionTemplate = getSimplePrompt;
 
@@ -25,7 +31,6 @@ export async function docuSummary(question, senderNumber, phone_number_id) {
       standaloneQuestionTemplate
     );
 
-    //   "You are a helpful and enthusiastic professional book summarizer bot who can answer a given question about Books based on the context provided. Try to find the answer in the context. If you really don't know the answer, say "I'm sorry, I cant sumarize that" Don't try to make up an answer. Always speak as if you were chatting to a friend."
     const answerTemplate = documentPrompt;
 
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
@@ -64,6 +69,12 @@ export async function docuSummary(question, senderNumber, phone_number_id) {
 
     await send_message(response, senderNumber, phone_number_id);
     console.log(response);
+    const data = {
+      user_name: senderNumber,
+      summary: response,
+      docu_name: fileName,
+    };
+    await saveBooks(data);
     return response;
   } catch (error) {
     console.log(error);

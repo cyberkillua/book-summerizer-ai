@@ -46,3 +46,18 @@ export async function insertData(tableName, data) {
     return false;
   }
 }
+
+export async function saveBooks(data) {
+  try {
+    const { error } = await supabase.from("user_summaries").insert(data);
+    if (error) {
+      console.error("Error inserting data:", error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    return false;
+  }
+}

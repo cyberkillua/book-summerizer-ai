@@ -11,6 +11,7 @@ import { send_message } from "./utils/sendMessage.js";
 import { formatConvHistory } from "./utils/formatConvo.js";
 import "dotenv/config";
 import { textPrompt } from "./utils/constants.js";
+
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
   modelName: "gpt-4-turbo",
@@ -68,7 +69,9 @@ export async function askAI(question, senderNumber, phone_number_id) {
     convoHistory.push(question);
     convoHistory.push(response);
     await send_message(response, senderNumber, phone_number_id);
+
     console.log(response);
+
     return response;
   } catch (error) {
     console.log(error);
