@@ -14,7 +14,7 @@ import { textPrompt } from "./utils/constants.js";
 
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  modelName: "gpt-4-turbo",
+  modelName: process.env.MODEL,
   openAIApiKey: openAIKey,
   presence_penalty: 0,
   frequency_penalty: 0.3,

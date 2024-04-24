@@ -14,7 +14,7 @@ import { saveBooks } from "./utils/databaseFunctions.js";
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
 const llm = new ChatOpenAI({
-  modelName: "gpt-4-turbo",
+  modelName: process.env.MODEL,
   openAIApiKey: openAIKey,
 });
 
