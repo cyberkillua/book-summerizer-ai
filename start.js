@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { send_message } from "./utils/sendMessage.js";
+import { findSummary, findBookOrDoc } from "./utils/databaseFunctions.js";
+import { textPrompt } from "./utils/constants.js";
 
 import "dotenv/config";
 
@@ -7,35 +9,109 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
 });
 
-export async function ask_ai(userInput, senderNumber, phone_number_id) {
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "get_books_in_library",
+      description:
+        "Get a list of books currently available in the library fot this user",
+      parameters: {
+        type: "object",
+        properties: {
+          docu_name: {
+            type: "string",
+            description: "The name or title of the book to search for",
+            default: "",
+          },
+          user_name: {
+            type: "string",
+            description: "The username of the user who added the book",
+            default: "",
+          },
+          limit: {
+            type: "integer",
+            description: "The maximum number of books to return",
+            default: 10,
+          },
+        },
+        required: ["user_name"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_book_summary",
+      description: "Get the summary of a book from the database ",
+      parameters: {
+        type: "object",
+        properties: {
+          docu_name: {
+            type: "string",
+            description: "The name or title of the book",
+            required: true,
+          },
+        },
+        required: ["docu_name"],
+      },
+    },
+  },
+];
+
+export async function ask_ai(userInput, user_name, phone_number_id) {
   try {
     console.log("Asking AI...");
 
     const conversationArr = [
       {
         role: "system",
-        content: `Act as a professional book summarizer named Ajao. Your goal is to help the user understand a book without reading it. Concentrate on only the most important takeaways and primary points from the book that together will give the user a solid overview and understanding of the book and its topic.
-Your task is to write a thorough yet concise summary of “{{Book name}}" by {{Author}} and to answer questions about the book`,
+        content: textPrompt,
+      },
+      {
+        role: "user",
+        content: userInput,
       },
     ];
-    conversationArr.push({
-      role: "user",
-      content: userInput,
-    });
+
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: conversationArr,
-      presence_penalty: 0,
-      frequency_penalty: 0.3,
+      tools: tools,
+      tool_choice: "auto",
       temperature: 0.1,
     });
-    const returnedtext = response.choices[0].message.content;
-    conversationArr.push({
-      role: "system",
-      content: response.choices[0].message,
-    });
-    await send_message(returnedtext, senderNumber, phone_number_id);
-    return returnedtext;
+    const responseMessage = response.choices[0].message;
+    const toolCalls = responseMessage.tool_calls;
+    if (responseMessage.tool_calls) {
+      const availableFunctions = {
+        get_books_in_library: findSummary,
+        get_book_summary: findBookOrDoc,
+      };
+      conversationArr.push(responseMessage);
+      for (const toolCall of toolCalls) {
+        const functionName = toolCall.function.name;
+        const functionToCall = availableFunctions[functionName];
+
+        let functionResponse = await functionToCall(user_name);
+        functionResponse = JSON.stringify(functionResponse, null, 2);
+        conversationArr.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: functionResponse,
+        });
+      }
+
+      const secondResponse = await openai.chat.completions.create({
+        model: process.env.MODEL,
+        messages: conversationArr,
+      });
+      console.log(secondResponse.choices);
+      const finalResponse = secondResponse.choices;
+      await send_message(finalResponse, user_name, phone_number_id);
+      return;
+    }
   } catch (error) {
     console.log(error);
   }

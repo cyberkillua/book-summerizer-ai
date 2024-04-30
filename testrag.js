@@ -60,7 +60,6 @@ export async function askAI(question, senderNumber, phone_number_id) {
       },
       answerChain,
     ]);
-    console.log("CALLING CHAIN");
 
     const response = await chain.invoke({
       question: question,

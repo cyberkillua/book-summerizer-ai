@@ -9,7 +9,7 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { send_message } from "./utils/sendMessage.js";
-import { saveBooks } from "./utils/databaseFunctions.js";
+import { insertData } from "./utils/databaseFunctions.js";
 
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
@@ -40,7 +40,6 @@ export async function docuSummary(
       .pipe(new StringOutputParser());
 
     const retriever = await retriveFromVectorStore();
-    console.log("I RETERIVED");
 
     const retrieverChain = RunnableSequence.from([
       (prevResult) => prevResult.standalone_question,
@@ -74,7 +73,8 @@ export async function docuSummary(
       summary: response,
       docu_name: fileName,
     };
-    await saveBooks(data);
+
+    await insertData("user_summaries", data);
     return response;
   } catch (error) {
     console.log(error);

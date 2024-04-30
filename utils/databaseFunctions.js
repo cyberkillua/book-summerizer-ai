@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import "dotenv/config";
 
 const supaBaseApiKey = process.env.SUPERBASEAPIKEY;
 const supaBaseURL = process.env.SUPERBASEURL;
@@ -47,17 +48,36 @@ export async function insertData(tableName, data) {
   }
 }
 
-export async function saveBooks(data) {
+export async function findSummary(user_name) {
   try {
-    const { error } = await supabase.from("user_summaries").insert(data);
+    const { data, error } = await supabase
+      .from("user_summaries")
+      .select("*")
+      .eq("user_name", user_name);
     if (error) {
-      console.error("Error inserting data:", error);
-      return false;
+      throw error;
     }
 
-    return true;
+    return data;
   } catch (error) {
-    console.error("Error inserting data:", error);
+    console.error("Error checking data existence:", error);
+    return false;
+  }
+}
+
+export async function findBookOrDoc(bookName) {
+  try {
+    const { data, error } = await supabase
+      .from("user_summaries")
+      .select("*")
+      .eq("docu_name", bookName);
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error checking data existence:", error);
     return false;
   }
 }
