@@ -102,7 +102,6 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
         content: userInput,
       },
     ];
-    console.log("Asking first response...");
 
     const response = await openai.chat.completions.create({
       model: process.env.MODEL,
@@ -112,10 +111,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
       temperature: 0.1,
     });
     const responseMessage = response.choices[0].message;
-    console.log("got first response...");
-    console.log(responseMessage);
     const toolCalls = responseMessage.tool_calls;
-    console.log(toolCalls);
     if (responseMessage.tool_calls) {
       console.log("got the tools...");
       const availableFunctions = {
@@ -148,7 +144,6 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
           content: functionResponse,
         });
       }
-      console.log("calling second response...");
 
       const secondResponse = await openai.chat.completions.create({
         model: process.env.MODEL,
@@ -166,6 +161,14 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
 
       await insertData("user_summaries", data);
       await send_message(finalResponse, user_name, phone_number_id);
+      return;
+    } else {
+      const response = await openai.chat.completions.create({
+        model: process.env.MODEL,
+        messages: conversationArr,
+      });
+      const rep = response.choices[0].message.content;
+      await send_message(rep, user_name, phone_number_id);
       return;
     }
   } catch (error) {
