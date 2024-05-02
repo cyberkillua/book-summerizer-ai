@@ -114,7 +114,6 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
     const responseMessage = response.choices[0].message;
     console.log("got first response...");
     console.log(responseMessage);
-    console.log(toolCalls);
     const toolCalls = responseMessage.tool_calls;
     console.log(toolCalls);
     if (responseMessage.tool_calls) {
