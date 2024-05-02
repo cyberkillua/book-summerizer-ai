@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { send_message } from "./utils/sendMessage.js";
 import { findSummary, findBookOrDoc } from "./utils/databaseFunctions.js";
 import { textPrompt } from "./utils/constants.js";
+import { insertData } from "./utils/databaseFunctions.js";
 
 import "dotenv/config";
 
@@ -57,6 +58,34 @@ const tools = [
     },
   },
 ];
+
+export async function getName(userInput) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: process.env.MODEL,
+      messages: [
+        {
+          role: "system",
+          content: `extract the book name or document name from the ${userInput} 
+          and return the book name
+          ###
+          userInput: Tell me about the atomic habits,
+          answer: atomic habits`,
+        },
+        {
+          role: "user",
+          content: userInput,
+        },
+      ],
+      temperature: 0.1,
+    });
+    console.log(response.choices[0].message);
+    const bookName = response.choices[0].message.content;
+    return bookName;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function ask_ai(userInput, user_name, phone_number_id) {
   try {
@@ -121,6 +150,14 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
 
       const finalResponse = secondResponse.choices[0].message.content;
       console.log(finalResponse);
+      const bookName = await getName(userInput);
+      const data = {
+        user_name: user_name,
+        summary: finalResponse,
+        docu_name: bookName,
+      };
+
+      await insertData("user_summaries", data);
       await send_message(finalResponse, user_name, phone_number_id);
       return;
     }
@@ -128,5 +165,3 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
     console.log(error);
   }
 }
-
-ask_ai("Tell me about Never Split-the-Difference.pdf + 2348152856520");
