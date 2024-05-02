@@ -61,6 +61,7 @@ const tools = [
 
 export async function getName(userInput) {
   try {
+    console.log("getting name...");
     const response = await openai.chat.completions.create({
       model: process.env.MODEL,
       messages: [
@@ -112,6 +113,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
     const responseMessage = response.choices[0].message;
     const toolCalls = responseMessage.tool_calls;
     if (responseMessage.tool_calls) {
+      console.log("got the tools...");
       const availableFunctions = {
         get_books_in_library: findSummary,
         get_book_summary: findBookOrDoc,
@@ -142,6 +144,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
           content: functionResponse,
         });
       }
+      console.log("calling second response...");
 
       const secondResponse = await openai.chat.completions.create({
         model: process.env.MODEL,
