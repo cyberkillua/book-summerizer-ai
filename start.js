@@ -102,6 +102,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
         content: userInput,
       },
     ];
+    console.log("Asking first response...");
 
     const response = await openai.chat.completions.create({
       model: process.env.MODEL,
@@ -111,6 +112,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
       temperature: 0.1,
     });
     const responseMessage = response.choices[0].message;
+    console.log("got first response...");
     const toolCalls = responseMessage.tool_calls;
     if (responseMessage.tool_calls) {
       console.log("got the tools...");
