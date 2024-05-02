@@ -50,7 +50,6 @@ const tools = [
           docu_name: {
             type: "string",
             description: "The name or title of the book",
-            required: true,
           },
         },
         required: ["docu_name"],
@@ -75,7 +74,7 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
     ];
 
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: process.env.MODEL,
       messages: conversationArr,
       tools: tools,
       tool_choice: "auto",
@@ -91,9 +90,21 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
       conversationArr.push(responseMessage);
       for (const toolCall of toolCalls) {
         const functionName = toolCall.function.name;
+        console.log("this is the function name " + functionName);
         const functionToCall = availableFunctions[functionName];
-
-        let functionResponse = await functionToCall(user_name);
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        let functionResponse;
+        if (functionName === "get_book_summary") {
+          functionResponse = await functionToCall(functionArgs.docu_name);
+          if (functionResponse.length > 0) {
+            console.log(functionResponse[0].summary);
+            const toolResponse = functionResponse[0].summary;
+            await send_message(toolResponse, user_name, phone_number_id);
+            return;
+          }
+        } else if (functionName === "get_books_in_library") {
+          functionResponse = await functionToCall(user_name);
+        }
         functionResponse = JSON.stringify(functionResponse, null, 2);
         conversationArr.push({
           tool_call_id: toolCall.id,
@@ -107,8 +118,9 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
         model: process.env.MODEL,
         messages: conversationArr,
       });
-      console.log(secondResponse.choices);
-      const finalResponse = secondResponse.choices;
+
+      const finalResponse = secondResponse.choices[0].message.content;
+      console.log(finalResponse);
       await send_message(finalResponse, user_name, phone_number_id);
       return;
     }
@@ -116,3 +128,5 @@ export async function ask_ai(userInput, user_name, phone_number_id) {
     console.log(error);
   }
 }
+
+ask_ai("Tell me about Never Split-the-Difference.pdf + 2348152856520");

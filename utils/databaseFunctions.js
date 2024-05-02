@@ -65,12 +65,12 @@ export async function findSummary(user_name) {
   }
 }
 
-export async function findBookOrDoc(bookName) {
+export async function findBookOrDoc(docu_name) {
   try {
     const { data, error } = await supabase
       .from("user_summaries")
       .select("*")
-      .eq("docu_name", bookName);
+      .ilike("docu_name", docu_name);
     if (error) {
       throw error;
     }

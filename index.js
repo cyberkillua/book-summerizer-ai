@@ -5,7 +5,8 @@ import cors from "cors";
 import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
-import { askAI } from "./testrag.js";
+// import { askAI } from "./testrag.js";
+import { ask_ai } from "./start.js";
 import { docuSummary } from "./documentRAG.js";
 import { checkDataExists, insertData } from "./utils/databaseFunctions.js";
 
@@ -26,7 +27,7 @@ app.post("/webhook", async (req, res) => {
   if (object && entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
     const body = entry[0].changes[0].value;
     const { metadata, messages } = body;
-    const { phone_number_id: phoneNumber } = metadata;
+    const { phone_number_id } = metadata;
     const { from, timestamp, type, document } = messages[0];
 
     const data = { timeStamp: timestamp, phoneNumber: from };
@@ -50,7 +51,7 @@ app.post("/webhook", async (req, res) => {
     if (type === "text") {
       const msg_body = messages[0].text.body;
       console.log("Received webhook message:", msg_body);
-      await askAI(msg_body, from, phoneNumber);
+      await ask_ai(msg_body, from, phone_number_id);
     } else if (type === "document") {
       console.log("Received document!!");
       const MEDIA_ID = document.id;
@@ -63,7 +64,7 @@ app.post("/webhook", async (req, res) => {
         information retrieved by the retrieval-augmented generation (RAG) system. 
         `,
         from,
-        phoneNumber,
+        phone_number_id,
         fileName
       );
     } else {
