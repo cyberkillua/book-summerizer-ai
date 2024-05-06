@@ -10,6 +10,7 @@ import {
 } from "@langchain/core/runnables";
 import { send_message } from "./utils/sendMessage.js";
 import { insertData } from "./utils/databaseFunctions.js";
+import { getName } from "./start.js";
 
 import "dotenv/config";
 const openAIKey = process.env.OPEN_API_KEY;
@@ -68,10 +69,11 @@ export async function docuSummary(
 
     await send_message(response, senderNumber, phone_number_id);
     console.log(response);
+    const bookName = await getName(fileName);
     const data = {
       user_name: senderNumber,
       summary: response,
-      docu_name: fileName,
+      docu_name: bookName,
     };
 
     await insertData("user_summaries", data);
