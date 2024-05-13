@@ -46,7 +46,7 @@ app.post("/webhook", async (req, res) => {
     }
 
     await insertData("recieved_webhooks", data);
-    // console.log("THIS IS THE MESSAGE OBJECT", JSON.stringify(body, null, 2));
+    console.log("THIS IS THE MESSAGE OBJECT", JSON.stringify(body, null, 2));
     console.log("messgge type is " + type);
 
     if (type === "text") {
@@ -68,6 +68,8 @@ app.post("/webhook", async (req, res) => {
         phone_number_id,
         fileName
       );
+    } else if (type === "audio") {
+      console.log("Received audio!!");
     } else {
       console.log("Unknown message type. Nothing to do.");
     }
