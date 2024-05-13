@@ -46,7 +46,8 @@ app.post("/webhook", async (req, res) => {
     }
 
     await insertData("recieved_webhooks", data);
-    console.log("THIS IS THE MESSAGE OBJECT", JSON.stringify(body, null, 2));
+    // console.log("THIS IS THE MESSAGE OBJECT", JSON.stringify(body, null, 2));
+    console.log("messgge type is " + type);
 
     if (type === "text") {
       const msg_body = messages[0].text.body;
