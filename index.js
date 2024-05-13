@@ -9,6 +9,7 @@ import { fileToVector } from "./utils/vectorStore.js";
 import { ask_ai } from "./start.js";
 import { docuSummary } from "./documentRAG.js";
 import { checkDataExists, insertData } from "./utils/databaseFunctions.js";
+import { speechToText } from "./voice.js";
 
 const app = express();
 app.use(cors());
@@ -28,7 +29,7 @@ app.post("/webhook", async (req, res) => {
     const body = entry[0].changes[0].value;
     const { metadata, messages } = body;
     const { phone_number_id } = metadata;
-    const { from, timestamp, type, document } = messages[0];
+    const { from, timestamp, type, document, audio } = messages[0];
 
     const data = { timeStamp: timestamp, phoneNumber: from };
 
@@ -70,6 +71,10 @@ app.post("/webhook", async (req, res) => {
       );
     } else if (type === "audio") {
       console.log("Received audio!!");
+      const MEDIA_ID = audio.id;
+      const documentData = await fetchMediaData(MEDIA_ID);
+      const file = await getFile(documentData.url, MEDIA_ID);
+      await speechToText(file, from, phone_number_id);
     } else {
       console.log("Unknown message type. Nothing to do.");
     }
