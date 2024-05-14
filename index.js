@@ -2,10 +2,9 @@ import express from "express";
 import helmet from "helmet";
 import noCache from "nocache";
 import cors from "cors";
-import { fetchMediaData, getFile } from "./utils/fetchMedia.js";
+import { fetchMediaData, getFile, getAudio } from "./utils/fetchMedia.js";
 import "dotenv/config";
 import { fileToVector } from "./utils/vectorStore.js";
-// import { askAI } from "./testrag.js";
 import { ask_ai } from "./start.js";
 import { docuSummary } from "./documentRAG.js";
 import { checkDataExists, insertData } from "./utils/databaseFunctions.js";
@@ -73,7 +72,7 @@ app.post("/webhook", async (req, res) => {
       console.log("Received audio!!");
       const MEDIA_ID = audio.id;
       const documentData = await fetchMediaData(MEDIA_ID);
-      const file = await getFile(documentData.url, MEDIA_ID);
+      const file = await getAudio(documentData.url);
       await speechToText(file, from, phone_number_id);
     } else {
       console.log("Unknown message type. Nothing to do.");

@@ -3,7 +3,6 @@ import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-// import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 
 import "dotenv/config";
 

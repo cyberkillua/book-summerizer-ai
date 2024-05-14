@@ -1,6 +1,6 @@
 import axios from "axios";
 import fs from "fs";
-// import path from "path";
+import { WritableStreamBuffer } from "stream-buffers";
 
 const token = process.env.CLOUD_API_ACCESS_TOKEN;
 
@@ -47,4 +47,26 @@ export async function getFile(URL, FILE_NAME) {
   }
 }
 
+export async function getAudio(URL) {
+  try {
+    const audioStream = new WritableStreamBuffer();
+    const response = await axios.get(URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "stream",
+    });
+    response.data.pipe(audioStream.getStream());
 
+    await new Promise((resolve, reject) => {
+      audioStream.once("end", resolve);
+      audioStream.once("error", reject);
+    });
+
+    const audioBuffer = audioStream.getContents();
+    return audioBuffer;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

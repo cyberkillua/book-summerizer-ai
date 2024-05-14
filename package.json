@@ -24,6 +24,7 @@
     "nocache": "^4.0.0",
     "openai": "^4.28.4",
     "pdf-parse": "^1.1.1",
+    "stream-buffers": "^3.0.2",
     "whatsapp": "^0.0.5-Alpha"
   },
   "devDependencies": {
