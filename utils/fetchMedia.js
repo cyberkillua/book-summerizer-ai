@@ -64,6 +64,7 @@ export async function getAudio(URL) {
     });
 
     const audioBuffer = audioStream.getContents();
+    console.log("buffer gotten" + audioBuffer);
     return audioBuffer;
   } catch (error) {
     console.error(error);
