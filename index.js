@@ -72,7 +72,6 @@ app.post("/webhook", async (req, res) => {
       console.log("Received audio!!");
       const MEDIA_ID = audio.id;
       const documentData = await fetchMediaData(MEDIA_ID);
-      console.log(documentData)
       const file = await getAudio(documentData.url);
       await speechToText(file, from, phone_number_id);
     } else {

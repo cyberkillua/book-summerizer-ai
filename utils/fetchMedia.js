@@ -49,13 +49,16 @@ export async function getFile(URL, FILE_NAME) {
 
 export async function getAudio(URL) {
   try {
+    console.log("getting audio");
     const audioStream = new WritableStreamBuffer();
+    console.log("audiostream " + audioStream);
     const response = await axios.get(URL, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
       responseType: "stream",
     });
+    console.log(response);
     response.data.pipe(audioStream);
 
     await new Promise((resolve, reject) => {
