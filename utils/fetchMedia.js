@@ -59,7 +59,6 @@ export async function getAudio(URL) {
       },
       responseType: "stream",
     });
-    console.log(response);
 
     const writer = fs.createWriteStream(tempFilePath);
 
@@ -71,7 +70,7 @@ export async function getAudio(URL) {
     });
 
     const audioFile = fs.createReadStream(tempFilePath);
-    console.log("file gotten" + audioFile);
+
     return audioFile;
   } catch (error) {
     console.error(error);
