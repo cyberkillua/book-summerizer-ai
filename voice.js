@@ -9,14 +9,17 @@ const openai = new OpenAI({
 });
 
 export async function speechToText(file, from, phone_number_id) {
-  console.log("calling openai");
-  const transcription = await openai.audio.transcriptions.create({
-    file: file,
-    model: "whisper-1",
-    response_format: "text",
-  });
-  console.log(transcription.text);
-  await send_message(transcription.text, from, phone_number_id);
+  try {
+    console.log("calling openai");
+    const transcription = await openai.audio.transcriptions.create({
+      file: file,
+      model: "whisper-1",
+    });
+    console.log(transcription.text);
+    await send_message(transcription.text, from, phone_number_id);
 
-  return transcription.text;
+    return transcription.text;
+  } catch (error) {
+    console.log(error);
+  }
 }
