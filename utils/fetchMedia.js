@@ -56,7 +56,7 @@ export async function getAudio(URL) {
       },
       responseType: "stream",
     });
-    response.data.pipe(audioStream.getStream());
+    response.data.pipe(audioStream);
 
     await new Promise((resolve, reject) => {
       audioStream.once("end", resolve);
