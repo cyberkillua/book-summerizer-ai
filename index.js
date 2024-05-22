@@ -9,6 +9,7 @@ import { ask_ai } from "./start.js";
 import { docuSummary } from "./documentRAG.js";
 import { checkDataExists, insertData } from "./utils/databaseFunctions.js";
 import { speechToText } from "./voice.js";
+import waitListRoute from "./routes/waitlistroutes.js";
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,8 @@ app.use(helmet());
 app.use(helmet.hidePoweredBy());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use("/api/v1/waitlist", waitListRoute);
 
 app.get("/", (_req, res) => {
   res.end("Works!!");
