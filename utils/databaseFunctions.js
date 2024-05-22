@@ -38,13 +38,13 @@ export async function insertData(tableName, data) {
 
     if (error) {
       console.error("Error inserting data:", error);
-      return false;
+      throw error;
     }
 
     return true;
   } catch (error) {
     console.error("Error inserting data:", error);
-    return false;
+    throw error;
   }
 }
 
