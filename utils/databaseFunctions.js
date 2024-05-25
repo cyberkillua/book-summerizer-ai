@@ -59,7 +59,8 @@ export async function checkExist(tableName, filterColumn, filterValue) {
       console.error("Error checking data existence:", error);
       return false;
     }
-    return data !== null;
+    console.log(data);
+    return data;
   } catch (error) {
     console.error("Error checking data existence:", error);
     return false;

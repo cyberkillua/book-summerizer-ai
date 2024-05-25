@@ -7,7 +7,7 @@ export async function joinWaitList(req, res) {
 
     const data = { email: lowercaseEmail };
     const emailExist = await checkExist("wait_list", "email", lowercaseEmail);
-    if (emailExist) {
+    if (emailExist.length > 0) {
       res.status(409).json({ error: "This email is already on the wait list" });
       return;
     }
