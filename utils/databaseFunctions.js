@@ -48,6 +48,24 @@ export async function insertData(tableName, data) {
   }
 }
 
+export async function checkExist(tableName, filterColumn, filterValue) {
+  try {
+    const { data, error } = await supabase
+      .from(tableName)
+      .select()
+      .eq(filterColumn, filterValue);
+
+    if (error) {
+      console.error("Error checking data existence:", error);
+      return false;
+    }
+    return data !== null;
+  } catch (error) {
+    console.error("Error checking data existence:", error);
+    return false;
+  }
+}
+
 export async function findSummary(user_name) {
   try {
     const { data, error } = await supabase

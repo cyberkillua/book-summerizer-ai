@@ -1,9 +1,17 @@
-import { insertData } from "../utils/databaseFunctions.js";
+import { insertData, checkExist } from "../utils/databaseFunctions.js";
 
 export async function joinWaitList(req, res) {
   try {
     const { email } = req.body;
-    const data = { email };
+    const lowercaseEmail = email.toLowerCase();
+    const data = { email: lowercaseEmail };
+    const emailExist = await checkExist("wait_list", email, lowercaseEmail);
+    if (emailExist) {
+      res
+        .status(409)
+        .json({ message: "This email is already on the wait list" });
+      return;
+    }
     await insertData("wait_list", data);
 
     res.status(200).json({ message: "wait list joined" });
