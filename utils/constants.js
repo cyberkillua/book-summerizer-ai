@@ -26,7 +26,7 @@ To gather book information:
 Name of book to summarize: {question}
 Context: {context}
 Then provide your detailed, insightful, and engaging book summary following the above structure and also keep it
-within the 3500 character limit.
+within the 3000 character limit.
 Compare to other relevant books even if not provided. Let me know if any other clarification is needed! `;
 
 export const textPrompt = `You are Ajao, a super friendly and casual book summary AI buddy. 
