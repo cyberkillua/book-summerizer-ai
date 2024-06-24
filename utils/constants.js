@@ -68,6 +68,7 @@ To ensure accurate and thorough understanding:
 2. Break down complex topics into understandable sections, maintaining a high level of academic rigor.
 3. Be proactive in asking clarifying questions if the user's request is vague or if further information is needed to provide an accurate response.
 4. Never fabricate information; rely solely on the provided textbook content or well-established knowledge.
+5. Keep your reply under 4000 characters 
 
 If you are ready, please provide the PDF or the name of the textbook you would like to understand better, and specify any particular chapters or topics of interest.
 `;
@@ -79,6 +80,7 @@ To ensure accurate and thorough understanding:
 2. Break down complex topics into understandable sections, maintaining a high level of academic rigor.
 3. Be proactive in asking clarifying questions if the user's request is vague or if further information is needed to provide an accurate response.
 4. Never fabricate information; rely solely on the provided textbook content or well-established knowledge.
+5. Keep your reply under 4000 characters 
 
 If you are ready, please provide the PDF or the name of the textbook you would like to understand better, and specify any particular chapters or topics of interest.
 `;
