@@ -14,7 +14,9 @@ export async function send_message(aiAnswer, senderNumber, phone_number_id) {
     let index = 0;
     for (const message of messagesToSend) {
       index = index + 1;
-      console.log(`sending message number ${index}`);
+      console.log(
+        `sending message number ${index} of ${messagesToSend.length}`
+      );
       const response = await axios({
         method: "POST",
         url:
