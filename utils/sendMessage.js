@@ -17,7 +17,7 @@ export async function send_message(aiAnswer, senderNumber, phone_number_id) {
       console.log(
         `sending message number ${index} of ${messagesToSend.length}`
       );
-      const response = await axios({
+      await axios({
         method: "POST",
         url:
           "https://graph.facebook.com/v12.0/" +
@@ -31,9 +31,8 @@ export async function send_message(aiAnswer, senderNumber, phone_number_id) {
         },
         headers: { "Content-Type": "application/json" },
       });
-
-      return response.data;
     }
+    return;
   } catch (e) {
     console.log("Error sending message:", e);
   }
