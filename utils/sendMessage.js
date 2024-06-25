@@ -1,5 +1,5 @@
 import axios from "axios";
-import { splitMessage } from "./splitMessages";
+import { splitMessage } from "./splitMessages.js";
 const token = process.env.CLOUD_API_ACCESS_TOKEN;
 
 export async function send_message(aiAnswer, senderNumber, phone_number_id) {
